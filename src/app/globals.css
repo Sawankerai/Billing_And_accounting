@@ -1,26 +1,250 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ===== Layout ===== */
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+  background: #f5f7fb;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Right Side Wrapper */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page Content */
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+/* ===== Top Header (BLUE BAR) ===== */
+
+.topbar {
+  height: 70px;
+  background: linear-gradient(90deg, #1d4ed8, #2563eb);
+  display: flex;
+  align-items: center;
+  padding: 0 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.topbar-left h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.topbar-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  background: white;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+/* ===== Sidebar ===== */
+
+.sidebar {
+  width: 260px;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+}
+
+/* Logo */
+.sidebar-logo {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-logo img {
+  width: 160px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* Menu wrapper */
+.menu {
+  flex: 1;
+}
+
+/* ===== MODULE (Parent Section) ===== */
+
+.menu-module {
+  margin-top: 14px;
+}
+
+.menu-title {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-title:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+/* Arrow */
+.arrow {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* ===== SUB MENU ===== */
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+  padding-left: 12px;
+  animation: dropdown 0.25s ease;
+}
+
+@keyframes dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.submenu-link {
+  padding: 10px 12px;
+  margin: 4px 6px;
+  border-radius: 8px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.18s ease;
+}
+
+.submenu-link:hover {
+  background: #1e293b;
+  color: white;
+  transform: translateX(5px);
+}
+
+/* Logout Button */
+.logout {
+  background: #ef4444;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.2s;
+}
+
+.logout:hover {
+  background: #dc2626;
+}
+
+/* ===== Cards ===== */
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+}
+
+/* ===== Forms ===== */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 15px;
+}
+
+.form input,
+.form textarea {
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form input:focus,
+.form textarea:focus {
+  border-color: #2563eb;
+}
+
+.form button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.form button:hover {
+  background: #1d4ed8;
+}
+
+/* ===== Table ===== */
+
+.table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #f3f4f6;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.table td {
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
+
+.empty {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
 }
