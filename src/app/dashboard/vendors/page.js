@@ -1,26 +1,34 @@
-export default function Vendors() {
+"use client";
+import { useState } from "react";
+
+export default function VendorsPage() {
+  const [mode, setMode] = useState("view");
+
   return (
-    <div className="card">
-      <h2>Vendors List</h2>
+    <div className="page-container">
+      <h2>Vendors</h2>
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Company</th>
-            <th>City</th>
-          </tr>
-        </thead>
+      <div className="top-actions">
+        <button
+          className={mode === "view" ? "active-btn" : ""}
+          onClick={() => setMode("view")}
+        >
+          View Vendors
+        </button>
 
-        <tbody>
-          <tr>
-            <td colSpan="4" style={{ textAlign: "center" }}>
-              No vendors added yet...
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <button
+          className={mode === "add" ? "active-btn" : ""}
+          onClick={() => setMode("add")}
+        >
+          Add Vendor
+        </button>
+      </div>
+
+      {mode === "view" ? (
+        <div>Your vendors table here</div>
+      ) : (
+        <div>Your vendor form here</div>
+      )}
     </div>
   );
 }

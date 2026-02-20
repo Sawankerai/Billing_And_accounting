@@ -4,10 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useSidebar } from "@/app/context/SidebarContext";
+
 import {
   LayoutDashboard,
   Users,
-  UserPlus,
   Building2,
   Receipt,
   Repeat,
@@ -22,33 +23,64 @@ import {
   CalendarClock
 } from "lucide-react";
 
+/* ================= LOGO ================= */
+
+function SidebarLogo({ expanded }) {
+  return (
+    <div className="sidebar-logo">
+      {expanded ? (
+        <Image src="/companylogo.png" alt="Company Logo" width={150} height={50} priority />
+      ) : (
+        <Image src="/company-icon.png" alt="Company Icon" width={32} height={32} priority />
+      )}
+    </div>
+  );
+}
+
+/* ================= SUB LINK ================= */
+
+function SubMenuLink({ href, icon: Icon, label, active, onClick }) {
+  return (
+    <Link href={href} onClick={onClick} className={`submenu-link ${active ? "active" : ""}`}>
+      <Icon size={16} />
+      <span>{label}</span>
+    </Link>
+  );
+}
+
+/* ================= MAIN COMPONENT ================= */
+
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { expanded, toggleSidebar, collapseSidebar } = useSidebar();
+
   const [openMenu, setOpenMenu] = useState(null);
 
+  /* ===== Detect active module ===== */
   useEffect(() => {
-    if (
-      pathname.startsWith("/dashboard/customers") ||
-      pathname.startsWith("/dashboard/vendors") ||
-      pathname.startsWith("/dashboard/balance")
-    )
-      setOpenMenu("cvm");
-    else if (
-      pathname.startsWith("/dashboard/invoices") ||
-      pathname.startsWith("/dashboard/pos")
-    )
-      setOpenMenu("billing");
-    else if (
-      pathname.startsWith("/dashboard/products") ||
-      pathname.startsWith("/dashboard/categories") ||
-      pathname.startsWith("/dashboard/stock")
-    )
-      setOpenMenu("inventory");
+    if (pathname.startsWith("/dashboard/customers") ||
+        pathname.startsWith("/dashboard/vendors") ||
+        pathname.startsWith("/dashboard/balance")) setOpenMenu("cvm");
+
+    else if (pathname.startsWith("/dashboard/invoices") ||
+             pathname.startsWith("/dashboard/pos")) setOpenMenu("billing");
+
+    else if (pathname.startsWith("/dashboard/products") ||
+             pathname.startsWith("/dashboard/categories") ||
+             pathname.startsWith("/dashboard/stock")) setOpenMenu("inventory");
+
+    collapseSidebar();
   }, [pathname]);
 
-  const toggleMenu = (menu) => {
-    setOpenMenu(openMenu === menu ? null : menu);
+  /* ===== Expand first then open ===== */
+  const toggleMenu = (key) => {
+    if (!expanded) {
+      toggleSidebar();
+      setOpenMenu(key);
+      return;
+    }
+    setOpenMenu(openMenu === key ? null : key);
   };
 
   const logout = () => {
@@ -56,109 +88,102 @@ export default function Sidebar() {
     router.push("/login");
   };
 
+  /* ===== MENU CONFIG ===== */
+
   const menus = [
     {
-      title: "Customer & Vendor Management",
       key: "cvm",
+      title: "Customer & Vendor Management",
       icon: Users,
       items: [
-        { name: "View Customers", link: "/dashboard/customers", icon: Users },
-        { name: "Add Customer", link: "/dashboard/customers/add", icon: UserPlus },
-        { name: "View Vendors", link: "/dashboard/vendors", icon: Building2 },
-        { name: "Add Vendor", link: "/dashboard/vendors/add", icon: UserPlus },
-        { name: "Outstanding Balance", link: "/dashboard/balance", icon: AlertTriangle },
+        { label: "Customers", href: "/dashboard/customers", icon: Users },
+        { label: "Vendors", href: "/dashboard/vendors", icon: Building2 },
+        { label: "Outstanding Balance", href: "/dashboard/balance", icon: AlertTriangle },
       ],
     },
     {
-      title: "Invoice & Billing",
       key: "billing",
+      title: "Invoice & Billing",
       icon: Receipt,
       items: [
-        { name: "Invoices", link: "/dashboard/invoices", icon: Receipt },
-        { name: "Recurring Invoices", link: "/dashboard/invoices/recurring", icon: Repeat },
-        { name: "Credit / Debit Note", link: "/dashboard/invoices/notes", icon: FileText },
-        { name: "Delivery Challan", link: "/dashboard/invoices/challan", icon: Truck },
-        { name: "POS Billing", link: "/dashboard/pos", icon: ShoppingCart },
+        { label: "Invoices", href: "/dashboard/invoices", icon: Receipt },
+        { label: "Recurring Invoices", href: "/dashboard/invoices/recurring", icon: Repeat },
+        { label: "Credit / Debit Note", href: "/dashboard/invoices/notes", icon: FileText },
+        { label: "Delivery Challan", href: "/dashboard/invoices/challan", icon: Truck },
+        { label: "POS Billing", href: "/dashboard/pos", icon: ShoppingCart },
       ],
     },
     {
-      title: "Inventory Management",
       key: "inventory",
+      title: "Inventory Management",
       icon: Package,
       items: [
-        { name: "Products", link: "/dashboard/products", icon: Boxes },
-        { name: "Categories", link: "/dashboard/categories", icon: ClipboardList },
-        { name: "Low Stock Alert", link: "/dashboard/stock", icon: AlertTriangle },
-        { name: "Purchase Order", link: "/dashboard/purchase-orders", icon: FileText },
-        { name: "Barcode Scanner", link: "/dashboard/barcode", icon: ScanLine },
-        { name: "Batch & Expiry", link: "/dashboard/batch-expiry", icon: CalendarClock },
+        { label: "Products", href: "/dashboard/products", icon: Boxes },
+        { label: "Categories", href: "/dashboard/categories", icon: ClipboardList },
+        { label: "Low Stock Alert", href: "/dashboard/stock", icon: AlertTriangle },
+        { label: "Purchase Order", href: "/dashboard/purchase-orders", icon: FileText },
+        { label: "Barcode Scanner", href: "/dashboard/barcode", icon: ScanLine },
+        { label: "Batch & Expiry", href: "/dashboard/batch-expiry", icon: CalendarClock },
       ],
     },
   ];
 
+  /* ================= RENDER ================= */
+
   return (
-    <div className="sidebar">
+    <>
+      {expanded && <div className="sidebar-backdrop" onClick={collapseSidebar}></div>}
 
-      {/* LOGO */}
-      <div className="sidebar-logo">
-        <Image
-          src="/companylogo.png"
-          alt="Company Logo"
-          width={150}
-          height={60}
-          priority
-        />
-      </div>
+      <aside className={`sidebar ${expanded ? "expanded" : ""}`}>
+        <SidebarLogo expanded={expanded} />
 
-      <nav className="menu">
+        <nav className="menu">
 
-        {/* Dashboard */}
-        <Link
-          href="/dashboard"
-          className={`submenu-link ${pathname === "/dashboard" ? "active" : ""}`}
-        >
-          <LayoutDashboard size={18} style={{ marginRight: 10 }} />
-          Dashboard
-        </Link>
+          {/* Dashboard */}
+          <SubMenuLink
+            href="/dashboard"
+            icon={LayoutDashboard}
+            label="Dashboard"
+            active={pathname === "/dashboard"}
+            onClick={collapseSidebar}
+          />
 
-        {menus.map((menu) => {
-          const Icon = menu.icon;
+          {/* Modules */}
+          {menus.map((menu) => {
+            const Icon = menu.icon;
 
-          return (
-            <div key={menu.key} className="menu-module">
+            return (
+              <div key={menu.key} className="menu-module">
+                <div className="menu-title" onClick={() => toggleMenu(menu.key)}>
+                  <span className="menu-label">
+                    <Icon size={18} />
+                    <span>{menu.title}</span>
+                  </span>
 
-              <div className="menu-title" onClick={() => toggleMenu(menu.key)}>
-                <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <Icon size={18} />
-                  {menu.title}
-                </span>
-                <span className="arrow">{openMenu === menu.key ? "▼" : "▶"}</span>
-              </div>
-
-              {openMenu === menu.key && (
-                <div className="submenu">
-                  {menu.items.map((item, index) => {
-                    const ItemIcon = item.icon;
-                    return (
-                      <Link
-                        key={index}
-                        href={item.link}
-                        className={`submenu-link ${pathname === item.link ? "active" : ""}`}
-                      >
-                        <ItemIcon size={16} style={{ marginRight: 10 }} />
-                        {item.name}
-                      </Link>
-                    );
-                  })}
+                  <span className="arrow">{openMenu === menu.key ? "▼" : "▶"}</span>
                 </div>
-              )}
-            </div>
-          );
-        })}
-      </nav>
 
-      <button className="logout" onClick={logout}>Logout</button>
+                {openMenu === menu.key && (
+                  <div className="submenu">
+                    {menu.items.map((item) => (
+                      <SubMenuLink
+                        key={item.href}
+                        href={item.href}
+                        icon={item.icon}
+                        label={item.label}
+                        active={pathname === item.href}
+                        onClick={collapseSidebar}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
 
-    </div>
+        <button className="logout" onClick={logout}>Logout</button>
+      </aside>
+    </>
   );
 }

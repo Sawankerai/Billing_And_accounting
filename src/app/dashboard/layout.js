@@ -1,18 +1,19 @@
 "use client";
 
 import Sidebar from "@/app/components/Sidebar";
-import Topbar from "@/app/components/Topbar";
-import "../globals.css";
+import Header from "@/app/components/Header";
+import { SidebarProvider } from "@/app/context/SidebarContext";
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="dashboard">
-      <Sidebar />
-
-      <div className="main">
-        <Topbar />
-        <div className="content">{children}</div>
+    <SidebarProvider>
+      <div className="dashboard-container">
+        <Sidebar />
+        <div className="main-content">
+          <Header />
+          <div className="page-content">{children}</div>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import { Menu } from "lucide-react";
 import { useSidebar } from "@/app/context/SidebarContext";
 
@@ -7,10 +9,10 @@ export default function Header() {
   return (
     <div className="topbar">
       <button className="menu-btn" onClick={toggleSidebar}>
-        <Menu size={22} />
+        <Menu size={24} />
       </button>
 
-      <h1>Billing Management System</h1>
+      <h2>Billing Management System</h2>
     </div>
   );
 }
