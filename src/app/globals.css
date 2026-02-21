@@ -34,12 +34,10 @@
   padding:18px 10px;
 }
 
-/* Expanded */
 .sidebar.expanded{
   width:260px;
 }
 
-/* Backdrop */
 .sidebar-backdrop{
   position:fixed;
   inset:0;
@@ -59,6 +57,7 @@
   transition:margin-left .28s ease;
   position:relative;
   z-index:1;
+  background:#f3f4f6;
 }
 
 .sidebar.expanded ~ .main-content{
@@ -75,29 +74,32 @@
 =================================*/
 
 .sidebar-logo{
-  height:60px;
+  height:80px;
   display:flex;
   align-items:center;
   justify-content:center;
   margin-bottom:20px;
   border-bottom:1px solid rgba(255,255,255,0.08);
+  transition:all .3s ease;
 }
 
 .sidebar-logo img{
-  transition:all .25s ease;
+  transition:all .3s ease;
   object-fit:contain;
 }
 
-/* collapsed icon */
 .sidebar:not(.expanded) .sidebar-logo img{
-  width:32px;
-  height:32px;
+  width:48px;
+  height:48px;
 }
 
-/* expanded logo */
 .sidebar.expanded .sidebar-logo img{
-  width:150px;
+  width:170px;
   height:auto;
+}
+
+.sidebar-logo img:hover{
+  transform:scale(1.05);
 }
 
 /* ===============================
@@ -115,6 +117,7 @@
   cursor:pointer;
   color:#cbd5e1;
   font-size:14px;
+  transition:.2s;
 }
 
 .menu-title:hover{
@@ -143,6 +146,7 @@
   text-decoration:none;
   color:#94a3b8;
   font-size:14px;
+  transition:.2s;
 }
 
 .submenu-link:hover{
@@ -155,31 +159,33 @@
   color:white;
 }
 
-/* collapsed mode hide text */
 .sidebar:not(.expanded) .submenu-link span,
 .sidebar:not(.expanded) .menu-label span:last-child,
 .sidebar:not(.expanded) .arrow{
   display:none;
 }
 
-/* center icons when collapsed */
 .sidebar:not(.expanded) .submenu-link{
   justify-content:center;
 }
 
 /* ===============================
-   HEADER
+   HEADER (UPDATED MODERN STYLE)
 =================================*/
 
 .topbar{
   height:60px;
-  background:linear-gradient(90deg,#2563eb,#1d4ed8);
+  background:linear-gradient(90deg,#7c3aed,#2563eb);
   color:white;
   display:flex;
   align-items:center;
-  gap:16px;
-  padding:0 20px;
+  justify-content:space-between;
+  padding:0 25px;
   font-weight:600;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  position:sticky;
+  top:0;
+  z-index:500;
 }
 
 .menu-btn{
@@ -187,6 +193,7 @@
   border:none;
   color:white;
   cursor:pointer;
+  font-size:20px;
 }
 
 /* ===============================
@@ -217,7 +224,13 @@
   padding:25px;
   border-radius:14px;
   box-shadow:0 4px 18px rgba(0,0,0,0.05);
+  transition:.3s;
 }
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
 /* ===============================
    CUSTOMERS PAGE
 =================================*/
@@ -256,11 +269,13 @@
   border:1px solid #e2e8f0;
   padding:8px 12px;
   border-radius:6px;
+  background:white;
 }
 
 .search-box input{
   border:none;
   outline:none;
+  background:transparent;
 }
 
 .right-controls{
@@ -277,11 +292,16 @@
   border:none;
   cursor:pointer;
   font-weight:500;
+  transition:.2s;
 }
 
 .btn-green{
   background:#22c55e;
   color:white;
+}
+
+.btn-green:hover{
+  background:#16a34a;
 }
 
 .btn-blue{

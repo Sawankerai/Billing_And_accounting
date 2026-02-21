@@ -5,12 +5,10 @@ export default function Header() {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <div className="topbar">
-      <button className="menu-btn" onClick={toggleSidebar}>
-        <Menu size={22} />
-      </button>
-
-      <h1>Billing Management System</h1>
-    </div>
+   <div className="topbar">
+  <button className="menu-btn">☰</button>
+      </div>
+      
+  
   );
 }

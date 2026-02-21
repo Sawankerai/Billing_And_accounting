@@ -12,7 +12,7 @@ export default function Header() {
         <Menu size={24} />
       </button>
 
-      <h2>Billing Management System</h2>
+     
     </div>
   );
 }
