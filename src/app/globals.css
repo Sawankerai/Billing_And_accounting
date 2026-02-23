@@ -12,11 +12,11 @@
 .dashboard-container{
   display:flex;
   min-height:100vh;
-  background:#f1f5f9;
+  background:#f8fafc;
 }
 
 /* ===============================
-   SIDEBAR (RAIL SYSTEM)
+   SIDEBAR (SMOOTH + DEPTH)
 =================================*/
 
 .sidebar{
@@ -25,8 +25,10 @@
   left:0;
   height:100vh;
   width:72px;
-  background:linear-gradient(180deg,#0f172a,#020617);
-  transition:width .28s ease;
+  background:#ffffff;
+  border-right:1px solid #e5e7eb;
+  box-shadow:4px 0 20px rgba(0,0,0,0.05); /* soft depth */
+  transition:width .35s cubic-bezier(0.4, 0, 0.2, 1);
   overflow:hidden;
   z-index:1000;
   display:flex;
@@ -38,15 +40,8 @@
   width:260px;
 }
 
-.sidebar-backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.25);
-  z-index:900;
-}
-
 /* ===============================
-   MAIN CONTENT SHIFT
+   MAIN CONTENT
 =================================*/
 
 .main-content{
@@ -54,10 +49,9 @@
   flex:1;
   display:flex;
   flex-direction:column;
-  transition:margin-left .28s ease;
-  position:relative;
-  z-index:1;
-  background:#f3f4f6;
+  transition:margin-left .35s cubic-bezier(0.4, 0, 0.2, 1);
+  background:#f8fafc;
+  min-width:0;
 }
 
 .sidebar.expanded ~ .main-content{
@@ -74,13 +68,12 @@
 =================================*/
 
 .sidebar-logo{
-  height:80px;
+  height:75px;
   display:flex;
   align-items:center;
   justify-content:center;
   margin-bottom:20px;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  transition:all .3s ease;
+  border-bottom:1px solid #f1f5f9;
 }
 
 .sidebar-logo img{
@@ -89,17 +82,13 @@
 }
 
 .sidebar:not(.expanded) .sidebar-logo img{
-  width:48px;
-  height:48px;
+  width:44px;
+  height:44px;
 }
 
 .sidebar.expanded .sidebar-logo img{
-  width:170px;
+  width:160px;
   height:auto;
-}
-
-.sidebar-logo img:hover{
-  transform:scale(1.05);
 }
 
 /* ===============================
@@ -115,20 +104,38 @@
   padding:12px;
   border-radius:10px;
   cursor:pointer;
-  color:#cbd5e1;
+  color:#374151;
   font-size:14px;
-  transition:.2s;
+  transition:.2s ease;
 }
 
 .menu-title:hover{
-  background:#1e293b;
-  color:white;
+  background:#f3f4f6;
+  color:#111827;
 }
 
 .menu-label{
   display:flex;
   align-items:center;
   gap:12px;
+}
+
+/* Smooth label animation */
+.sidebar .menu-label span,
+.sidebar .submenu-link span{
+  transition:opacity .25s ease, transform .25s ease;
+}
+
+.sidebar:not(.expanded) .menu-label span,
+.sidebar:not(.expanded) .submenu-link span{
+  opacity:0;
+  transform:translateX(-5px);
+}
+
+.sidebar.expanded .menu-label span,
+.sidebar.expanded .submenu-link span{
+  opacity:1;
+  transform:translateX(0);
 }
 
 .submenu{
@@ -144,19 +151,20 @@
   padding:10px 12px;
   border-radius:8px;
   text-decoration:none;
-  color:#94a3b8;
+  color:#6b7280;
   font-size:14px;
-  transition:.2s;
+  transition:.2s ease;
 }
 
 .submenu-link:hover{
-  background:#1e293b;
-  color:white;
+  background:#f3f4f6;
+  color:#111827;
 }
 
 .submenu-link.active{
   background:#2563eb;
   color:white;
+  box-shadow:0 4px 12px rgba(37,99,235,0.3);
 }
 
 .sidebar:not(.expanded) .submenu-link span,
@@ -170,7 +178,7 @@
 }
 
 /* ===============================
-   HEADER (UPDATED MODERN STYLE)
+   TOPBAR
 =================================*/
 
 .topbar{
@@ -182,7 +190,7 @@
   justify-content:space-between;
   padding:0 25px;
   font-weight:600;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
   position:sticky;
   top:0;
   z-index:500;
@@ -197,38 +205,99 @@
 }
 
 /* ===============================
-   LOGOUT
-=================================*/
-
-.logout{
-  margin-top:auto;
-  background:#ef4444;
-  border:none;
-  padding:10px;
-  border-radius:8px;
-  color:white;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.logout:hover{
-  background:#dc2626;
-}
-
-/* ===============================
    CARDS
 =================================*/
 
 .card{
   background:white;
-  padding:25px;
-  border-radius:14px;
-  box-shadow:0 4px 18px rgba(0,0,0,0.05);
-  transition:.3s;
+  padding:24px;
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.05);
+  transition:.3s ease;
 }
 
 .card:hover{
-  transform:translateY(-5px);
+  transform:translateY(-4px);
+}
+
+/* ===============================
+   SIDEBAR LOGOUT
+=================================*/
+
+.logout{
+  margin-top:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px;
+  border-radius:10px;
+  background:#fef2f2;
+  color:#dc2626;
+  border:1px solid #fee2e2;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:500;
+  transition:all .2s ease;
+}
+
+.logout:hover{
+  background:#fee2e2;
+  transform:translateY(-2px);
+}
+
+/* ===============================
+   PROFILE DROPDOWN
+=================================*/
+
+.profile-dropdown{
+  position:absolute;
+  top:70px;
+  right:20px;
+  width:260px;
+  background:white;
+  border-radius:14px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.12);
+  border:1px solid #e5e7eb;
+  padding:16px;
+  z-index:1000;
+}
+
+.profile-header{
+  border-bottom:1px solid #f1f5f9;
+  padding-bottom:10px;
+  margin-bottom:10px;
+}
+
+.profile-name{
+  font-weight:600;
+  color:#111827;
+}
+
+.profile-email{
+  font-size:13px;
+  color:#6b7280;
+  margin-top:4px;
+}
+
+.profile-option{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.2s;
+  color:#374151;
+  font-size:14px;
+}
+
+.profile-option:hover{
+  background:#f3f4f6;
+}
+
+.profile-option.logout-option{
+  color:#dc2626;
 }
 
 /* ===============================
@@ -237,9 +306,9 @@
 
 .customers-page{
   background:white;
-  border-radius:12px;
-  padding:20px;
-  box-shadow:0 4px 18px rgba(0,0,0,0.05);
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.05);
 }
 
 .customers-topbar{
@@ -258,8 +327,9 @@
 
 .filter-select{
   padding:8px 12px;
-  border-radius:6px;
+  border-radius:8px;
   border:1px solid #e2e8f0;
+  background:white;
 }
 
 .search-box{
@@ -268,7 +338,7 @@
   gap:8px;
   border:1px solid #e2e8f0;
   padding:8px 12px;
-  border-radius:6px;
+  border-radius:8px;
   background:white;
 }
 
@@ -288,7 +358,7 @@
   align-items:center;
   gap:6px;
   padding:8px 16px;
-  border-radius:6px;
+  border-radius:8px;
   border:none;
   cursor:pointer;
   font-weight:500;
@@ -307,7 +377,6 @@
 .btn-blue{
   background:#3b82f6;
   color:white;
-  margin-top:15px;
 }
 
 .btn-light{
@@ -316,14 +385,14 @@
 
 .customers-table{
   border:1px solid #e2e8f0;
-  border-radius:8px;
+  border-radius:12px;
   overflow:hidden;
 }
 
 .table-header{
   display:grid;
   grid-template-columns:2fr 1.5fr 1fr 1.5fr 1fr;
-  padding:12px 16px;
+  padding:14px 18px;
   background:#f8fafc;
   font-weight:600;
   font-size:14px;

@@ -3,20 +3,26 @@
 import { useState, useEffect } from "react";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CustomersPage() {
+  const router = useRouter();
+
+  // ================= STATE =================
   const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState([]);
 
-  // Load saved customers
+  // ================= LOAD DATA =================
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("customers")) || [];
     setCustomers(data);
   }, []);
 
-  // 🔥 DELETE FUNCTION
+  // ================= DELETE FUNCTION =================
   const handleDelete = (index) => {
-    const confirmDelete = confirm("Are you sure you want to delete this customer?");
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this customer?"
+    );
     if (!confirmDelete) return;
 
     const updated = [...customers];
@@ -26,19 +32,23 @@ export default function CustomersPage() {
     localStorage.setItem("customers", JSON.stringify(updated));
   };
 
-  // Filter search
+  // ================= EDIT FUNCTION =================
+  const handleEdit = (index) => {
+    localStorage.setItem("editCustomerIndex", index.toString());
+    router.push("/dashboard/customers/add");
+  };
+
+  // ================= SEARCH FILTER =================
   const filtered = customers.filter((c) =>
     `${c.customerName} ${c.companyName} ${c.email} ${c.mobile}`
       .toLowerCase()
       .includes(search.toLowerCase())
   );
 
+  // ================= RETURN UI =================
   return (
     <div className="customers-page">
-
-      {/* ================= TOP BAR ================= */}
       <div className="customers-topbar">
-
         <div className="left-controls">
           <select className="filter-select">
             <option>Filter Customers / Customers</option>
@@ -60,16 +70,13 @@ export default function CustomersPage() {
             <Plus size={16} />
             New
           </Link>
+
           <button className="btn btn-light">Export</button>
           <button className="btn btn-light">Import</button>
         </div>
-
       </div>
 
-      {/* ================= TABLE ================= */}
       <div className="customers-table">
-
-        {/* HEADER */}
         <div
           className="table-header"
           style={{
@@ -78,7 +85,7 @@ export default function CustomersPage() {
             padding: "12px",
             fontWeight: "600",
             background: "#f3f4f6",
-            borderBottom: "1px solid #ddd"
+            borderBottom: "1px solid #ddd",
           }}
         >
           <div>Company name</div>
@@ -112,7 +119,7 @@ export default function CustomersPage() {
                 gridTemplateColumns: "2fr 2fr 1fr 2fr 1.5fr 1.5fr",
                 padding: "12px",
                 borderBottom: "1px solid #eee",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <div>{c.companyName}</div>
@@ -121,17 +128,16 @@ export default function CustomersPage() {
               <div>{c.email}</div>
               <div>{c.mobile}</div>
 
-              {/* ACTION BUTTONS */}
               <div style={{ display: "flex", gap: "8px" }}>
                 <button
-                  onClick={() => alert("Edit feature coming soon")}
+                  onClick={() => handleEdit(i)}
                   style={{
                     padding: "4px 10px",
                     background: "#3b82f6",
                     color: "white",
                     border: "none",
                     borderRadius: "4px",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                 >
                   Edit
@@ -145,17 +151,15 @@ export default function CustomersPage() {
                     color: "white",
                     border: "none",
                     borderRadius: "4px",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                 >
                   Delete
                 </button>
               </div>
-
             </div>
           ))
         )}
-
       </div>
     </div>
   );

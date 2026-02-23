@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   TextField,
-  MenuItem,
   Button,
   Grid,
   Typography,
@@ -20,9 +19,12 @@ import {
 
 export default function AddCustomer() {
   const router = useRouter();
+
   const [tab, setTab] = useState(0);
   const [errors, setErrors] = useState({});
   const [sameAddress, setSameAddress] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+  const [customers, setCustomers] = useState([]);
 
   const [form, setForm] = useState({
     customerName: "",
@@ -48,6 +50,28 @@ export default function AddCustomer() {
     status: true,
   });
 
+  /* ================= LOAD DATA ================= */
+  useEffect(() => {
+    const storedCustomers =
+      JSON.parse(localStorage.getItem("customers")) || [];
+    setCustomers(storedCustomers);
+
+    const index = localStorage.getItem("editCustomerIndex");
+
+    if (index !== null) {
+      const numericIndex = Number(index);
+      const customerToEdit = storedCustomers[numericIndex];
+
+      if (customerToEdit) {
+        setForm(customerToEdit);
+        setEditIndex(numericIndex);
+        setTab(0); // Always open on Basic Info when editing
+      }
+    }
+  }, []);
+
+  /* ================= HANDLERS ================= */
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -72,7 +96,8 @@ export default function AddCustomer() {
     }
   };
 
-  // ✅ VALIDATION
+  /* ================= VALIDATION ================= */
+
   const validate = () => {
     let newErrors = {};
 
@@ -96,12 +121,26 @@ export default function AddCustomer() {
     return Object.keys(newErrors).length === 0;
   };
 
+  /* ================= SUBMIT ================= */
+
   const submit = (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const old = JSON.parse(localStorage.getItem("customers")) || [];
-    localStorage.setItem("customers", JSON.stringify([...old, form]));
+    let updatedCustomers = [...customers];
+
+    if (editIndex !== null) {
+      updatedCustomers[editIndex] = form;
+      localStorage.removeItem("editCustomerIndex");
+    } else {
+      updatedCustomers.push(form);
+    }
+
+    localStorage.setItem(
+      "customers",
+      JSON.stringify(updatedCustomers)
+    );
+
     router.push("/dashboard/customers");
   };
 
@@ -116,7 +155,7 @@ export default function AddCustomer() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5" mb={3} fontWeight={600}>
-        Add New Customer
+        {editIndex !== null ? "Edit Customer" : "Add New Customer"}
       </Typography>
 
       <Tabs value={tab} onChange={(e, v) => setTab(v)} sx={{ mb: 3 }}>
@@ -192,21 +231,30 @@ export default function AddCustomer() {
 
         {/* ================= ADDRESS ================= */}
         {tab === 1 &&
-          section("Address",
+          section("Address Information",
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <TextField fullWidth label="Billing Country" name="billingCountry"
-                  value={form.billingCountry} onChange={handleChange} />
+                <TextField fullWidth label="Billing Country"
+                  name="billingCountry"
+                  value={form.billingCountry}
+                  onChange={handleChange}
+                />
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <TextField fullWidth label="Billing State" name="billingState"
-                  value={form.billingState} onChange={handleChange} />
+                <TextField fullWidth label="Billing State"
+                  name="billingState"
+                  value={form.billingState}
+                  onChange={handleChange}
+                />
               </Grid>
 
               <Grid item xs={12}>
-                <TextField fullWidth label="Billing Address" name="billingAddress"
-                  value={form.billingAddress} onChange={handleChange} />
+                <TextField fullWidth label="Billing Address"
+                  name="billingAddress"
+                  value={form.billingAddress}
+                  onChange={handleChange}
+                />
               </Grid>
 
               <Grid item xs={12}>
@@ -274,37 +322,15 @@ export default function AddCustomer() {
           )
         }
 
-        {/* ================= BUTTONS ================= */}
         <Paper sx={{ p: 2, borderRadius: 3 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="outlined" onClick={() => router.back()}>
+              Cancel
+            </Button>
 
-            {tab > 0 && (
-              <Button variant="outlined" onClick={() => setTab(tab - 1)}>
-                Previous
-              </Button>
-            )}
-
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Button variant="outlined" onClick={() => router.back()}>
-                Cancel
-              </Button>
-
-              {tab < 3 ? (
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    if (tab === 0 && !validate()) return;
-                    setTab(tab + 1);
-                  }}
-                >
-                  Save & Next
-                </Button>
-              ) : (
-                <Button variant="contained" color="primary" type="submit">
-                  Final Save
-                </Button>
-              )}
-            </Box>
+            <Button variant="contained" type="submit">
+              {editIndex !== null ? "Update Customer" : "Save Customer"}
+            </Button>
           </Box>
         </Paper>
 
